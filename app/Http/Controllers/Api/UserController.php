@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -15,8 +16,20 @@ class UserController extends Controller
 {
     //获取用户列表
     public function userlist(Request $request){
-        $userlist = Users::where('status',1)->get();
-        return json_encode(['errcode'=>'1','errmsg'=>'ok','data'=>$userlist],JSON_UNESCAPED_UNICODE );
+
+        $user = Session::get('user');
+
+            $role = $user->role;
+            if($role == 'teacher'){
+                $userlist = Users::where('status',1)->where('role','students')->paginate(20);
+            }elseif($role == 'admin'){
+                $userlist = Users::where('status',1)->whereIn('role',['students','teacher'])->paginate(20);
+            }elseif($role == 'students'){
+                $userlist =Users::where('status',1)->where('id',$user->id)->paginate(20);
+            }
+            return json_encode(['errcode'=>'1','errmsg'=>'ok','data'=>$userlist],JSON_UNESCAPED_UNICODE );
+
+
     }
 
     //新增用户
@@ -25,14 +38,12 @@ class UserController extends Controller
             //规则
             $rules = [
                 'username'=>'required|unique:users,username',
-                'password'=>'required',
                 'name'=>'required',
                 'role'=>'required'
             ];
             //自定义消息
             $messages = [
                 'username.required' => '请输入工号/学生号',
-                'password.required' => '请输入密码',
                 'username.unique' => '工号/学生号已存在',
                 'name.required' => '请输入姓名',
                 'role.required' => '请输入角色'
@@ -41,14 +52,21 @@ class UserController extends Controller
             $this->validate($request, $rules, $messages);
 
             $username = $request->input('username');
-            $password = $request->input('password');
             $name = $request->input('name');
             $role = $request->input('role');
-            $classname = $request->input('classname');
+            if($role == 'students'){
+                $classname = $request->input('classname');
+                if(!$classname){
+                    return json_encode(['errcode'=>'1001','errmsg'=>'请填写班级'],JSON_UNESCAPED_UNICODE );
+                }
+            }else{
+                $classname = '';
+            }
+
 
             $user = new Users();
             $user->username = $username;
-            $user->password =  Hash::make($password);
+            $user->password =  Hash::make(config('userconfig.password'));
             $user->status = 1;
             $user->role = $role;
             $user->name = $name;
@@ -158,7 +176,7 @@ class UserController extends Controller
                            $data[$key-1]['name'] = $v[0];
                            $data[$key-1]['username'] = $v[1];
                            $data[$key-1]['classname'] = $v[2];
-                           $data[$key-1]['password'] = hash::make('123456');
+                           $data[$key-1]['password'] = hash::make(config('userconfig.password'));
                            $data[$key-1]['role'] = 'students';
                            $data[$key-1]['status'] = 1;
                            $data_repeat[] = $v[1];
@@ -226,7 +244,7 @@ class UserController extends Controller
                         if($key>='1'){
                             $data[$key-1]['name'] = $v[0];
                             $data[$key-1]['username'] = $v[1];
-                            $data[$key-1]['password'] = hash::make('123456');
+                            $data[$key-1]['password'] = hash::make(config('userconfig.password'));
                             $data[$key-1]['role'] = 'teacher';
                             $data[$key-1]['status'] = 1;
                             $data_repeat[] = $v[1];

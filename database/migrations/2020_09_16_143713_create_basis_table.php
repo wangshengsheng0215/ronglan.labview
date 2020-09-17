@@ -21,6 +21,7 @@ class CreateBasisTable extends Migration
             $table->string('username')->comment('学号');
             $table->string('name')->comment('姓名');
             $table->string('classname')->comment('班级');
+            $table->string('role')->comment('身份');
             $table->string('project')->comment('考核项目名称');
             $table->string('childproject')->nullable()->comment('考核子项目名称');
             $table->integer('status')->comment('实验结果');

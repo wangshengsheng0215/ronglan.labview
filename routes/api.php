@@ -20,15 +20,17 @@ Route::post('labview/register','Api\LoginController@register');
 Route::post('labview/login','Api\LoginController@login');
 Route::get('labview/test','Api\LoginController@test');
 
-Route::any('labview/userlist','Api\UserController@userlist');
-Route::post('labview/adduser','Api\UserController@adduser');
-Route::post('labview/updateuser','Api\UserController@updateuser');
-Route::post('labview/deleteuser','Api\UserController@deleteuser');
-Route::post('labview/import','Api\UserController@import');
-Route::post('labview/importeacher','Api\UserController@importeacher');
+
 
 
 Route::group(['prefix'=>'labview','middleware'=>'check.login'],function (){
+    Route::get('userlist','Api\UserController@userlist');
+    Route::post('adduser','Api\UserController@adduser');
+    Route::post('updateuser','Api\UserController@updateuser');
+    Route::post('deleteuser','Api\UserController@deleteuser');
+    Route::post('import','Api\UserController@import');
+    Route::post('importeacher','Api\UserController@importeacher');
     Route::post('basis','Api\ScoreController@basis');
+    Route::any('lookbasis','Api\ScoreController@lookbasis');
 });
 //Route::post('labview/basis','Api\ScoreController@basis');

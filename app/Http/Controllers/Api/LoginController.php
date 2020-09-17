@@ -100,6 +100,7 @@ class LoginController extends Controller
                       Session::put('loginstatus',true);
                       $messages = "登录成功！";
                       $data = [];
+                      $data['id'] = $user->id;
                       $data['name'] = $user->name;
                       $data['username'] = $user->username;
                       $data['role'] = $user->role;
