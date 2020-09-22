@@ -17,8 +17,8 @@ class UserController extends Controller
     //获取用户列表
     public function userlist(Request $request){
 
-        $user = Session::get('user');
-
+        $user = \Auth::user();
+        if($user){
             $role = $user->role;
             if($role == 'teacher'){
                 $userlist = Users::where('status',1)->where('role','students')->paginate(20);
@@ -28,7 +28,9 @@ class UserController extends Controller
                 $userlist =Users::where('status',1)->where('id',$user->id)->paginate(20);
             }
             return json_encode(['errcode'=>'1','errmsg'=>'ok','data'=>$userlist],JSON_UNESCAPED_UNICODE );
-
+        }else{
+            return json_encode(['errcode'=>'402','errmsg'=>'token已过期请替换'],JSON_UNESCAPED_UNICODE );
+        }
 
     }
 

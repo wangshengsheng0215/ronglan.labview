@@ -36,8 +36,8 @@ class ScoreController extends Controller
             ];
 
             $this->validate($request, $rules, $messages);
-
-            $user = Session::get('user');
+            $user = \Auth::user();
+            //$user = Session::get('user');
             $basis = new Basis();
             $basis->username = $user->username;
             $basis->name = $user->name;
@@ -74,7 +74,8 @@ class ScoreController extends Controller
 
     //成绩列表
     public function lookbasis(Request $request){
-        $user = Session::get('user');
+        $user = \Auth::user();
+        //$user = Session::get('user');
         $role = $user->role;
         if($role == 'teacher'){
             $basislist = Basis::where('role','students')->paginate(20);
