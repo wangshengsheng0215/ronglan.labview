@@ -21,11 +21,14 @@ class UserController extends Controller
         if($user){
             $role = $user->role;
             if($role == 'teacher'){
-                $userlist = Users::where('status',1)->where('role','students')->paginate(20);
+                //$userlist = Users::where('status',1)->where('role','students')->paginate(20);
+                $userlist = Users::where('status',1)->where('role','students')->get();
             }elseif($role == 'admin'){
-                $userlist = Users::where('status',1)->whereIn('role',['students','teacher'])->paginate(20);
+                //$userlist = Users::where('status',1)->whereIn('role',['students','teacher'])->paginate(20);
+                $userlist = Users::where('status',1)->whereIn('role',['students','teacher'])->get();
             }elseif($role == 'students'){
-                $userlist =Users::where('status',1)->where('id',$user->id)->paginate(20);
+                //$userlist =Users::where('status',1)->where('id',$user->id)->paginate(20);
+                $userlist =Users::where('status',1)->where('id',$user->id)->get();
             }
             return json_encode(['errcode'=>'1','errmsg'=>'ok','data'=>$userlist],JSON_UNESCAPED_UNICODE );
         }else{

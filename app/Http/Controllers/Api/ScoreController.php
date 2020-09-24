@@ -78,11 +78,14 @@ class ScoreController extends Controller
         //$user = Session::get('user');
         $role = $user->role;
         if($role == 'teacher'){
-            $basislist = Basis::where('role','students')->paginate(20);
+            //$basislist = Basis::where('role','students')->paginate(20);
+            $basislist = Basis::where('role','students')->get();
         }elseif($role == 'admin'){
-            $basislist = Basis::paginate(20);
+            //$basislist = Basis::paginate(20);
+            $basislist = Basis::get();
         }elseif($role == 'students'){
-           $basislist = Basis::where('username',$user->username)->paginate(20);
+           //$basislist = Basis::where('username',$user->username)->paginate(20);
+           $basislist = Basis::where('username',$user->username)->get();
         }
         return json_encode(['errcode'=>'1','errmsg'=>'ok','data'=>$basislist],JSON_UNESCAPED_UNICODE );
     }
