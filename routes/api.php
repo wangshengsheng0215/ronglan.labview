@@ -43,5 +43,5 @@ Route::group(['prefix'=>'labview','middleware'=>'check.login'],function (){
     Route::post('import','Api\UserController@import');
     Route::post('importeacher','Api\UserController@importeacher');
     Route::post('basis','Api\ScoreController@basis');
-    Route::any('lookbasis','Api\ScoreController@lookbasis');
+    Route::get('lookbasis','Api\ScoreController@lookbasis');
 });
