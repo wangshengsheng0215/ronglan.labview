@@ -44,4 +44,5 @@ Route::group(['prefix'=>'labview','middleware'=>'check.login'],function (){
     Route::post('importeacher','Api\UserController@importeacher');
     Route::post('basis','Api\ScoreController@basis');
     Route::get('lookbasis','Api\ScoreController@lookbasis');
+    Route::post('logout','Api\LoginController@logout');
 });

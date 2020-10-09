@@ -128,6 +128,14 @@ class LoginController extends Controller
 
 
     }
+
+    //登出
+    public function logout(Request $request){
+        $data = Auth::guard('api')->logout();
+        Session::flush('user');
+        Session::flush('loginstatus');
+        return json_encode(['errcode'=>1,'data'=>$data,'errmsg'=>'退出登录'],JSON_UNESCAPED_UNICODE);
+    }
     //测试
     public function test(Request $request){
         try {
